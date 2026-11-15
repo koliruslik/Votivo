@@ -10,3 +10,6 @@
 [submodule "services/result-service"]
 	path = services/result-service
 	url = https://github.com/koliruslik/Votivo-result-service.git
+[submodule "services/vote-service"]
+	path = services/vote-service
+	url = https://github.com/ReilEgor/Votivo-vote-service.git
