@@ -6,10 +6,10 @@ Votivo is a microservices-based web application for creating polls, collecting v
 
 | Component | Description | Repository (main) |
 | --- | --- | --- |
-| [User Service](services/user-service) | Manages user profiles and integrates with Keycloak for authentication and authorization. | [Votivo-user-service](https://github.com/Volodymyr-Buryak/Votivo-user-service/tree/main) |
-| [Poll Service](services/poll-service) | Manages polls, questions, answer options, access settings, and poll lifecycle. | [Votivo-poll-service](https://github.com/Konnzy/Votivo-poll-service/tree/main) |
-| [Vote Service](services/vote-service) | Accepts and stores votes while enforcing participation rules and preventing duplicate voting. | [Votivo-vote-service](https://github.com/ReilEgor/Votivo-vote-service/tree/main) |
-| [Result Service](services/result-service) | Aggregates votes and provides poll results and statistics. | [Votivo-result-service](https://github.com/koliruslik/Votivo-result-service/tree/main) |
+| [User Service](backend/services/user-service) | Manages user profiles and integrates with Keycloak for authentication and authorization. | [Votivo-user-service](https://github.com/Volodymyr-Buryak/Votivo-user-service/tree/main) |
+| [Poll Service](backend/services/poll-service) | Manages polls, questions, answer options, access settings, and poll lifecycle. | [Votivo-poll-service](https://github.com/Konnzy/Votivo-poll-service/tree/main) |
+| [Vote Service](backend/services/vote-service) | Accepts and stores votes while enforcing participation rules and preventing duplicate voting. | [Votivo-vote-service](https://github.com/ReilEgor/Votivo-vote-service/tree/main) |
+| [Result Service](backend/services/result-service) | Aggregates votes and provides poll results and statistics. | [Votivo-result-service](https://github.com/koliruslik/Votivo-result-service/tree/main) |
 | [Frontend](frontend) | Provides the React interface for managing polls, casting votes, and viewing results. | [Votivo-frontend](https://github.com/koliruslik/Votivo-frontend/tree/main) |
 
 ## Repository layout
@@ -18,13 +18,16 @@ This integration repository connects independently developed components through 
 
 ```text
 Votivo/
-├── services/
-│   ├── user-service/
-│   ├── poll-service/
-│   ├── vote-service/
-│   └── result-service/
+├── backend/
+│   └── services/
+│       ├── user-service/
+│       ├── poll-service/
+│       ├── vote-service/
+│       └── result-service/
 └── frontend/
 ```
+
+Backend services are grouped under `backend/services/`, while the frontend remains a separate submodule at `frontend/` for independent Docker build contexts.
 
 ## Clone and update
 
