@@ -50,3 +50,14 @@ git submodule update --init --recursive
 Develop each component in its own repository and merge changes through a pull request. Then open a pull request in this repository to update the corresponding submodule reference to a published commit. Component updates are not pulled into this repository automatically.
 
 When working inside a submodule, switch to a development branch before editing files; submodule updates may check out a detached HEAD.
+
+## Run the backend locally
+
+```bash
+git submodule update --init --recursive
+cd backend
+cp .env.example .env   # optional: override ports and credentials
+docker compose up -d --build --wait
+```
+
+[backend/docker-compose.yml](backend/docker-compose.yml) starts PostgreSQL (one database and user per service, created by [backend/postgres/init-databases.sh](backend/postgres/init-databases.sh)), RabbitMQ, User Service and Vote Service with its migrations. Poll Service and Result Service will be added when they get a Dockerfile. Stop everything and drop the data with `docker compose down -v`.
