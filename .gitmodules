@@ -1,0 +1,12 @@
+[submodule "services/user-service"]
+	path = services/user-service
+	url = https://github.com/Volodymyr-Buryak/Votivo-user-service.git
+[submodule "services/poll-service"]
+	path = services/poll-service
+	url = https://github.com/Konnzy/Votivo-poll-service.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/koliruslik/Votivo-frontend.git
+[submodule "services/result-service"]
+	path = services/result-service
+	url = https://github.com/koliruslik/Votivo-result-service.git
