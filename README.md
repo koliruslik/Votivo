@@ -10,7 +10,7 @@ Votivo is a microservices-based web application for creating polls, collecting v
 | [Poll Service](backend/services/poll-service) | Manages polls, questions, answer options, access settings, and poll lifecycle. | [Votivo-poll-service](https://github.com/Konnzy/Votivo-poll-service/tree/main) |
 | [Vote Service](backend/services/vote-service) | Accepts and stores votes while enforcing participation rules and preventing duplicate voting. | [Votivo-vote-service](https://github.com/ReilEgor/Votivo-vote-service/tree/main) |
 | [Result Service](backend/services/result-service) | Aggregates votes and provides poll results and statistics. | [Votivo-result-service](https://github.com/koliruslik/Votivo-result-service/tree/main) |
-| [Frontend](frontend) | Provides the React interface for managing polls, casting votes, and viewing results. | [Votivo-frontend](https://github.com/koliruslik/Votivo-frontend/tree/main) |
+| [Frontend](frontend) | Provides the Angular interface for managing polls, casting votes, and viewing results. | [Votivo-frontend](https://github.com/koliruslik/Votivo-frontend/tree/main) |
 
 ## Repository layout
 
