@@ -41,6 +41,28 @@ services:
       - internal
     logging: *default-logging
 
+  # Local development server; data is persisted in PostgreSQL (keycloak_db).
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.2
+    command: ["start-dev"]
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      # Database and credentials are created by postgres/init-databases.sh.
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+    ports:
+      - "${KEYCLOAK_PORT:-18080}:8080"
+    networks:
+      - internal
+    logging: *default-logging
+
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     restart: unless-stopped
