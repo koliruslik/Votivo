@@ -16,3 +16,4 @@ create_database user
 create_database poll
 create_database vote
 create_database result
+create_database keycloak
