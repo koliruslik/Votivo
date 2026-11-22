@@ -1,5 +1,18 @@
 # Realm configuration changelog
 
+## v5 - 2026-11-22
+
+- Adds the `user-service` API audience to frontend access tokens.
+- Adds a separate `user-service-management` service account with `view-users` and `manage-users` for profile changes, account deletion and blocking. The synchronization account remains read-only.
+- Uses `${KEYCLOAK_USER_SERVICE_MANAGEMENT_SECRET}`; existing realms require applying these changes through the Admin Console or Admin API.
+
+## v4 - 2026-11-22
+
+- Copies v3 unchanged except for the new read-only `user-service-sync` confidential machine client and service account, plus `admin` now composing the `user` realm role.
+- Client credentials only: browser/password flows and DPoP are disabled for this machine client. Default scopes include service-account, role claims and the Admin API audience; the account receives `realm-management` `view-users` and `query-users` only.
+- Uses `${KEYCLOAK_USER_SERVICE_SYNC_SECRET}`; no real secret is stored in the snapshot.
+- Selected as the default for initial import. Existing realms must be updated through Admin Console/API; restarting with v4 does not migrate them or rotate credentials.
+
 ## v3 - 2026-11-21
 
 - Fresh export of the current votivo realm after application role and frontend mapper changes.
