@@ -1,5 +1,10 @@
 # Realm configuration changelog
 
+## v6 - 2026-11-22
+
+- Copies v5 and adds the `poll-service-audience` mapper to `votivo-frontend`, so access tokens carry the `poll-service` audience that the frontend gateway and Poll Service require. Without it every authenticated Poll request is refused.
+- Selected as the default for initial import. Existing realms are not migrated; apply the mapper through the Admin Console or Admin API (`frontend/docs/poll-service-audience-mapper.json`).
+
 ## v5 - 2026-11-22
 
 - Adds the `user-service` API audience to frontend access tokens.

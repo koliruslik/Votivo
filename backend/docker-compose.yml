@@ -73,7 +73,7 @@ services:
     ports:
       - "${KEYCLOAK_PORT:-18080}:8080"
     volumes:
-      - ./keycloak/import/${KEYCLOAK_REALM_VERSION:-v5}:/opt/keycloak/data/import:ro
+      - ./keycloak/import/${KEYCLOAK_REALM_VERSION:-v6}:/opt/keycloak/data/import:ro
       - ./keycloak/providers:/opt/keycloak/providers:ro
     networks:
       - internal
@@ -153,10 +153,11 @@ services:
         condition: service_healthy
     environment:
       APP_HTTP_PORT: 8080
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}
       DB_URL: postgres://vote:vote@postgres:5432/vote_db?sslmode=disable
       RABBITMQ_URL: amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASSWORD:-guest}@rabbitmq:5672/
     ports:
-      - "${VOTE_SERVICE_PORT:-18083}:8080"
+      - "127.0.0.1:${VOTE_SERVICE_PORT:-18083}:8080"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
       interval: 5s
@@ -193,8 +194,10 @@ services:
       KEYCLOAK_ISSUER_URI: ${POLL_KEYCLOAK_ISSUER_URI:-http://localhost:18080/realms/votivo}
       KEYCLOAK_JWK_SET_URI: ${POLL_KEYCLOAK_JWK_SET_URI:-http://keycloak:8080/realms/votivo/protocol/openid-connect/certs}
       KEYCLOAK_AUDIENCE: poll-service
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}
     ports:
-      - "${POLL_SERVICE_PORT:-18082}:8082"
+      # Loopback only, and every /api call needs the gateway's secret: the browser goes through `web`.
+      - "127.0.0.1:${POLL_SERVICE_PORT:-18082}:8082"
     networks:
       - internal
     logging: *default-logging
@@ -222,8 +225,9 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USER:-guest}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       RABBITMQ_VHOST: ${RABBITMQ_VHOST:-/}
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}
     ports:
-      - "${RESULT_SERVICE_PORT:-18084}:8083"
+      - "127.0.0.1:${RESULT_SERVICE_PORT:-18084}:8083"
     healthcheck:
       test:
         - CMD
@@ -234,6 +238,47 @@ services:
       timeout: 5s
       retries: 30
       start_period: 20s
+    networks:
+      - internal
+    logging: *default-logging
+
+# ============================
+# WEB (FRONTEND)
+# ============================
+  # The Votivo web interface: http://localhost:4200. Sign-in and registration are Keycloak's pages (realm "votivo").
+  # Its Node gateway verifies the token and forwards /api/v1 to Poll, Vote and Result. The browser must reach Keycloak
+  # and this service under exactly the origins registered for the client (localhost:18080 and localhost:4200).
+  web:
+    build: ../frontend
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_started
+      poll-service:
+        condition: service_healthy
+      vote-service:
+        condition: service_healthy
+      result-service:
+        condition: service_healthy
+    environment:
+      PORT: 4200
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:4200}
+      POLL_URL: http://poll-service:8082
+      VOTE_URL: http://vote-service:8080
+      RESULT_URL: http://result-service:8083
+      KEYCLOAK_ISSUER: ${POLL_KEYCLOAK_ISSUER_URI:-http://localhost:18080/realms/votivo}
+      KEYCLOAK_JWKS_URL: http://keycloak:8080/realms/votivo/protocol/openid-connect/certs
+      KEYCLOAK_AUDIENCE: poll-service
+      # The gateway verifies the access token and its DPoP proof; the services trust only calls that carry this secret.
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}
+      REQUIRE_DPOP: ${REQUIRE_DPOP:-true}
+    ports:
+      - "${WEB_PORT:-4200}:4200"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4200/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
     networks:
       - internal
     logging: *default-logging
