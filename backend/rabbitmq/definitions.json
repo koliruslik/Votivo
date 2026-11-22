@@ -1,0 +1,140 @@
+{
+  "exchanges": [
+    {
+      "name": "poll.events.exchange",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "vote.events.exchange",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "votivo.dlx",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "vote-service.poll-events",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "votivo.dlx",
+        "x-dead-letter-routing-key": "vote-service.poll-events"
+      }
+    },
+    {
+      "name": "vote-service.poll-events.dlq",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "result-service.poll-events",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "votivo.dlx",
+        "x-dead-letter-routing-key": "result-service.poll-events"
+      }
+    },
+    {
+      "name": "result-service.poll-events.dlq",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "result-service.vote-events",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "votivo.dlx",
+        "x-dead-letter-routing-key": "result-service.vote-events"
+      }
+    },
+    {
+      "name": "result-service.vote-events.dlq",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "poll.events.exchange",
+      "destination": "vote-service.poll-events",
+      "destination_type": "queue",
+      "routing_key": "poll.started",
+      "arguments": {}
+    },
+    {
+      "source": "poll.events.exchange",
+      "destination": "vote-service.poll-events",
+      "destination_type": "queue",
+      "routing_key": "poll.ended",
+      "arguments": {}
+    },
+    {
+      "source": "votivo.dlx",
+      "destination": "vote-service.poll-events.dlq",
+      "destination_type": "queue",
+      "routing_key": "vote-service.poll-events",
+      "arguments": {}
+    },
+    {
+      "source": "poll.events.exchange",
+      "destination": "result-service.poll-events",
+      "destination_type": "queue",
+      "routing_key": "poll.started",
+      "arguments": {}
+    },
+    {
+      "source": "poll.events.exchange",
+      "destination": "result-service.poll-events",
+      "destination_type": "queue",
+      "routing_key": "poll.ended",
+      "arguments": {}
+    },
+    {
+      "source": "votivo.dlx",
+      "destination": "result-service.poll-events.dlq",
+      "destination_type": "queue",
+      "routing_key": "result-service.poll-events",
+      "arguments": {}
+    },
+    {
+      "source": "vote.events.exchange",
+      "destination": "result-service.vote-events",
+      "destination_type": "queue",
+      "routing_key": "vote.cast",
+      "arguments": {}
+    },
+    {
+      "source": "vote.events.exchange",
+      "destination": "result-service.vote-events",
+      "destination_type": "queue",
+      "routing_key": "vote.revoked",
+      "arguments": {}
+    },
+    {
+      "source": "votivo.dlx",
+      "destination": "result-service.vote-events.dlq",
+      "destination_type": "queue",
+      "routing_key": "result-service.vote-events",
+      "arguments": {}
+    }
+  ]
+}

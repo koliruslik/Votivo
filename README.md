@@ -60,4 +60,18 @@ cp .env.example .env   # optional: override ports and credentials
 docker compose up -d --build --wait
 ```
 
-[backend/docker-compose.yml](backend/docker-compose.yml) starts PostgreSQL (one database and user per service, created by [backend/postgres/init-databases.sh](backend/postgres/init-databases.sh)), RabbitMQ, User Service and Vote Service with its migrations. Poll Service and Result Service will be added when they get a Dockerfile. Stop everything and drop the data with `docker compose down -v`.
+[backend/docker-compose.yml](backend/docker-compose.yml) starts PostgreSQL (one database and user per service, created by [backend/postgres/init-databases.sh](backend/postgres/init-databases.sh)), RabbitMQ with its exchanges and queues ([backend/rabbitmq](backend/rabbitmq)), Keycloak, and the User, Poll, Vote (with its migrations) and Result services. Stop everything and drop the data with `docker compose down -v`.
+
+| Service | Host port |
+| --- | --- |
+| Keycloak | 18080 |
+| User Service | 18081 |
+| Poll Service | 18082 |
+| Vote Service | 18083 |
+| Result Service | 18084 |
+| PostgreSQL | 15432 |
+| RabbitMQ (AMQP / management) | 15675 / 25675 |
+
+## Events
+
+Poll Service publishes `poll.started` and `poll.ended`; Vote Service consumes them to know which polls take votes and publishes `vote.cast` and `vote.revoked`; Result Service consumes all four to count the results. The exchanges, queues, routing keys, message bodies and delivery guarantees are in [docs/events.md](docs/events.md).
