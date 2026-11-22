@@ -1,13 +1,13 @@
 # Keycloak configuration
 
-`import/v5/votivo-realm.json` is the current snapshot; v3 and v4 are preserved unchanged. Older snapshots remain available in Git history.
+`import/v7/votivo-realm.json` is the current snapshot; earlier versions are preserved unchanged. Older snapshots remain available in Git history.
 Keep future Keycloak configuration (themes, scripts, etc.) under this directory.
 Only `import/${KEYCLOAK_REALM_VERSION}` is mounted to `/opt/keycloak/data/import`.
 
 ## Initial import
 
 1. Copy `../.env.example` to `../.env` and set all password/secret values.
-2. Set `SMTP_PASSWORD` (the provider SMTP key) and `SMTP_FROM` for SMTP in v2 and later. `RESEND_API_KEY` is retained for compatibility with older configurations.
+2. Set `SMTP_PASSWORD` (the Brevo SMTP password) and `SMTP_FROM` (a verified sender address). The realm uses smtp-relay.brevo.com:587 with STARTTLS and its configured Brevo SMTP login; RESEND_API_KEY is not used.
 3. Run `docker compose up -d keycloak` from `backend/`.
 
 Keycloak starts with `--import-realm`. The file is imported only if the `votivo`
@@ -34,7 +34,7 @@ PostgreSQL data volume is first initialized.
 
 ## Realm configuration versions
 
-`KEYCLOAK_REALM_VERSION=v5` in `backend/.env` selects the version for initial import.
+`KEYCLOAK_REALM_VERSION=v7` in `backend/.env` selects the version for initial import.
 Version identifiers refer to configuration snapshots, not separate Keycloak realms.
 The realm name stays `votivo` in every version; all files must be named
 `votivo-realm.json` to match the realm import naming convention.
@@ -52,7 +52,7 @@ changes in `keycloak/CHANGELOG.md`. For v7, copy v6 and follow the same process.
 Changes made in the Admin Console are not automatically saved into these files;
 export and sanitize the updated realm before saving it as a new version.
 
-To select a version, set `KEYCLOAK_REALM_VERSION=v5` (or the desired version) in `.env` and update `.env.example`
+To select a version, set `KEYCLOAK_REALM_VERSION=v7` (or the desired version) in `.env` and update `.env.example`
 if that version should become the default for new checkouts. Recreate the Keycloak container
 to apply the new mount. This does NOT update an existing `votivo` realm: startup
 import skips existing realms. Apply changes to a running realm through Admin API
@@ -127,3 +127,19 @@ After recreating the containers:
 
 The bundled JAR was built against Keycloak 21.1.2, while this compose uses 26.8.2.
 Runtime compatibility and event delivery must be checked after container startup.
+
+## Current themes and exports
+
+The v7 snapshot selects the bundled keywind login theme and votivo email theme.
+Keywind sources and rebuild instructions are in keywind/VOTIVO.md; email theme
+instructions are in themes/README.md. The account-console client is disabled.
+
+To export current configuration, run from the repository root:
+
+    python backend/keycloak/export_realm.py v8
+
+The script authenticates using backend/.env, preserves service-account role
+mappings, replaces SMTP/client secrets with environment placeholders and omits
+regular users and sessions. It refuses to overwrite existing snapshots. Keep
+SMTP_FROM and SMTP_PASSWORD in .env synchronized with your working SMTP settings;
+changes in the Admin Console do not update .env automatically.

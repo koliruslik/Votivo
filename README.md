@@ -84,7 +84,7 @@ docker compose up -d --build --wait
 
 - The browser must use `localhost` for both the web interface (4200) and Keycloak (18080): the client's redirect URIs are registered for these origins, and DPoP needs a secure context (`localhost` counts).
 - Registration needs working SMTP (`SMTP_PASSWORD`, `SMTP_FROM` in `.env`), because the realm requires e-mail verification.
-- Realm snapshot v6 carries the `poll-service` audience mapper. Keycloak imports a realm only when it does not exist yet, so an existing local realm needs the mapper added by hand (`frontend/docs/poll-service-audience-mapper.json`, see `backend/keycloak/CHANGELOG.md`).
+- Realm snapshot v7 includes the current login/email themes and carries the `poll-service` audience mapper. Keycloak imports a realm only when it does not exist yet, so an existing local realm needs the mapper added by hand (`frontend/docs/poll-service-audience-mapper.json`, see `backend/keycloak/CHANGELOG.md`).
 
 ## Events
 

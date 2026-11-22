@@ -1,5 +1,20 @@
 # Realm configuration changelog
 
+## v7 - 2026-11-23
+
+- Exports the current running `votivo` realm through the Admin API. Regular users,
+  passwords and sessions are excluded; current service-account role assignments
+  are preserved. SMTP and confidential client secrets use environment placeholders.
+- Selects `keywind` for login and `votivo` for email. Stores the built Keywind JAR,
+  its source and local palette/WebAuthn changes, and the shared email layout.
+- Enables `always_set_password_on_register_form` and preserves the configured
+  user-profile attribute order. Email verification remains enabled.
+- Disables `account-console`; the administrative console remains available.
+- Uses only SMTP_FROM and SMTP_PASSWORD for sender/password configuration;
+  the exported Brevo SMTP host, port and login remain in the realm snapshot.
+- Selected for fresh imports. Existing realms are not reimported or migrated.
+- `export_realm.py` supports future sanitized online configuration exports.
+
 ## v6 - 2026-11-22
 
 - Copies v5 and adds the `poll-service-audience` mapper to `votivo-frontend`, so access tokens carry the `poll-service` audience that the frontend gateway and Poll Service require. Without it every authenticated Poll request is refused.
