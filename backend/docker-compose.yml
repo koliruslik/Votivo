@@ -243,7 +243,7 @@ services:
 # ============================
   # No healthcheck: the service has no actuator yet and the JRE image has neither wget nor curl.
   user-service:
-    build: ./services/user-service
+    build: ${USER_SERVICE_BUILD_CONTEXT:-./services/user-service}
     restart: unless-stopped
     depends_on:
       postgres:
