@@ -266,6 +266,7 @@ services:
       POLL_URL: http://poll-service:8082
       VOTE_URL: http://vote-service:8080
       RESULT_URL: http://result-service:8083
+      USER_URL: http://user-service:8080
       KEYCLOAK_ISSUER: ${POLL_KEYCLOAK_ISSUER_URI:-http://localhost:18080/realms/votivo}
       KEYCLOAK_JWKS_URL: http://keycloak:8080/realms/votivo/protocol/openid-connect/certs
       KEYCLOAK_AUDIENCE: poll-service
@@ -297,6 +298,7 @@ services:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_db
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: user
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -316,7 +318,7 @@ services:
       APP_SECURITY_JWK_SET_URI: http://keycloak:8080/realms/votivo/protocol/openid-connect/certs
       APP_SECURITY_AUDIENCE: user-service
     ports:
-      - "${USER_SERVICE_PORT:-18081}:8080"
+      - "127.0.0.1:${USER_SERVICE_PORT:-18081}:8080"
     networks:
       - internal
     logging: *default-logging
