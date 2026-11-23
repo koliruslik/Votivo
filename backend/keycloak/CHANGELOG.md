@@ -1,5 +1,10 @@
 # Realm configuration changelog
 
+## v8 - 2026-11-23
+
+- Copies sanitized v7 and enables UPDATE_EMAIL for the frontend Change email action. Also enabled in the running local realm.
+- Selected for fresh imports. Existing realms enable UPDATE_EMAIL through Authentication -> Required actions.
+
 ## v7 - 2026-11-23
 
 - Exports the current running `votivo` realm through the Admin API. Regular users,
