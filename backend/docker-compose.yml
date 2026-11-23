@@ -72,7 +72,7 @@ services:
     ports:
       - "${KEYCLOAK_PORT:-18080}:8080"
     volumes:
-      - ./keycloak/import/${KEYCLOAK_REALM_VERSION:-v7}:/opt/keycloak/data/import:ro
+      - ./keycloak/import/${KEYCLOAK_REALM_VERSION:-v8}:/opt/keycloak/data/import:ro
       - ./keycloak/providers:/opt/keycloak/providers:ro
       - ./keycloak/themes:/opt/keycloak/themes:ro
     networks:
