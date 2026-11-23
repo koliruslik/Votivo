@@ -5,6 +5,8 @@ Vendored from https://github.com/lukin/keywind at upstream commit
 The upstream Apache-2.0 license is preserved in LICENSE.
 
 - Primary and secondary palettes match the Votivo frontend.
+- `update-email.ftl` styles Keycloak's UPDATE_EMAIL action with the same Keywind
+  components as password updates, including email validation and AIA cancellation.
 - WebAuthn decoding creates owned Uint8Array instances to satisfy current
   TypeScript BufferSource types.
 - package.json and pnpm-lock.yaml preserve the local dependency versions.
