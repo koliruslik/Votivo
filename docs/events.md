@@ -51,6 +51,7 @@ Published when a draft becomes `PUBLISHED`. The content of a published poll cann
   "title": "Lunch",
   "anonymous": false,
   "allow_vote_change": true,
+  "ends_at": "2099-12-31T12:00:00Z",
   "questions": [
     {
       "id": "22222222-2222-4222-8222-222222222222",
@@ -67,9 +68,15 @@ Published when a draft becomes `PUBLISHED`. The content of a published poll cann
 
 `multiple` is `true` for a multiple-choice question. `allow_vote_change` lets a participant change or revoke a vote; an anonymous poll never allows it (Vote Service enforces both).
 
+`ends_at` is the UTC deadline (RFC 3339). New publications require a future deadline. Missing/null
+is supported for previously published polls. Vote Service stores it and rejects cast/change/revoke
+at or after that instant, even if the scheduled `poll.ended` event has not arrived yet.
+
 ### `poll.ended` (Poll → Vote, Result)
 
-Published when a `PUBLISHED` poll stops taking votes: the owner closed it or a moderator blocked it. Blocking a draft or a poll that is already closed publishes nothing.
+Published when a `PUBLISHED` poll stops taking votes: the owner closed it, its deadline elapsed,
+or a moderator blocked it. Deadline closure uses reason `closed`. Blocking a draft or a poll that
+is already closed publishes nothing.
 
 ```json
 { "poll_id": "11111111-1111-4111-8111-111111111111", "reason": "closed" }

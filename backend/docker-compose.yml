@@ -195,6 +195,7 @@ services:
       KEYCLOAK_JWK_SET_URI: ${POLL_KEYCLOAK_JWK_SET_URI:-http://keycloak:8080/realms/votivo/protocol/openid-connect/certs}
       KEYCLOAK_AUDIENCE: poll-service
       INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}
+      ACCOUNT_DELETION_SECRET: ${ACCOUNT_DELETION_SECRET:-${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}}
     ports:
       # Loopback only, and every /api call needs the gateway's secret: the browser goes through `web`.
       - "127.0.0.1:${POLL_SERVICE_PORT:-18082}:8082"
@@ -313,10 +314,13 @@ services:
       APP_IDENTITY_SYNC_ENABLED: "true"
       APP_IDENTITY_MANAGEMENT_CLIENT_ID: user-service-management
       APP_IDENTITY_MANAGEMENT_CLIENT_SECRET: ${KEYCLOAK_USER_SERVICE_MANAGEMENT_SECRET:?Set KEYCLOAK_USER_SERVICE_MANAGEMENT_SECRET in .env}
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}
       APP_IDENTITY_MANAGEMENT_EMAIL_AS_USERNAME: "true"
       APP_SECURITY_ISSUER_URI: http://localhost:18080/realms/votivo
       APP_SECURITY_JWK_SET_URI: http://keycloak:8080/realms/votivo/protocol/openid-connect/certs
       APP_SECURITY_AUDIENCE: user-service
+      ACCOUNT_DELETION_SECRET: ${ACCOUNT_DELETION_SECRET:-${INTERNAL_AUTH_SECRET:?Set INTERNAL_AUTH_SECRET in .env}}
+      APP_ACCOUNT_DELETION_POLL_URL: http://poll-service:8082
     ports:
       - "127.0.0.1:${USER_SERVICE_PORT:-18081}:8080"
     networks:
