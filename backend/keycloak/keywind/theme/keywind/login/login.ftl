@@ -11,7 +11,6 @@
 <#assign usernameLabel><@usernameLabel.kw /></#assign>
 
 <@layout.registrationLayout
-  displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??
   displayMessage=!messagesPerField.existsError("username", "password")
   ;
   section
@@ -69,18 +68,14 @@
           </@button.kw>
         </@buttonGroup.kw>
       </@form.kw>
-    </#if>
-  <#elseif section="info">
-    <#if realm.password && realm.registrationAllowed && !registrationDisabled??>
-      <div class="text-center">
-        ${msg("noAccount")}
-        <@link.kw color="primary" href=url.registrationUrl>
-          ${msg("doRegister")}
-        </@link.kw>
-      </div>
+      <#if realm.registrationAllowed && !registrationDisabled??>
+        <@button.kw color="secondary" component="a" href=url.registrationUrl>
+          ${msg("votivoCreateAccount")}
+        </@button.kw>
+      </#if>
     </#if>
   <#elseif section="socialProviders">
-    <#if realm.password && social.providers??>
+    <#if realm.password && (social.providers)?has_content>
       <@identityProvider.kw providers=social.providers />
     </#if>
   </#if>
